@@ -1,0 +1,75 @@
+name: Build & Publish Docker Image
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    name: Build Docker image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Set up QEMU for multi-platform builds (arm64 etc.)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Log in to GitHub Container Registry (only on push, not PRs)
+      - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Generate image tags:
+      #   • ghcr.io/<owner>/neogpt:latest  – on every push to main/master
+      #   • ghcr.io/<owner>/neogpt:v1.2.3  – on version tags
+      #   • ghcr.io/<owner>/neogpt:sha-abc123 – always (commit SHA)
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/neogpt
+          tags: |
+            type=ref,event=branch
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=sha-,format=short
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
+
+      # Build via docker compose (respects docker-compose.yml build config)
+      - name: Build with Docker Compose
+        env:
+          NEOGPT_IMAGE: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+        run: docker compose build --no-cache
+
+      # Push all generated tags (skipped on PRs)
+      - name: Push image tags
+        if: github.event_name != 'pull_request'
+        env:
+          NEOGPT_IMAGE: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+        run: |
+          # Tag and push every generated label
+          for tag in ${{ join(fromJSON(steps.meta.outputs.json).tags, ' ') }}; do
+            docker tag "$NEOGPT_IMAGE" "$tag"
+            docker push "$tag"
+          done

@@ -1,0 +1,30 @@
+# Dependencies (reinstalled during build)
+node_modules/
+
+# Environment and secrets
+.env
+
+# Runtime data (mounted as a volume)
+data/
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+logs/
+
+# Dev tools
+.dockerignore
+Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+
+# Editor
+.vscode/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
