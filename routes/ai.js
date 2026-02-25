@@ -17,6 +17,7 @@ const execLimiter = rateLimit({
   keyGenerator: (req) => String(req.session?.userId || req.ip),
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { trustProxy: false },
   message: { error: 'Too many execution requests. Please slow down.' },
 });
 

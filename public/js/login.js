@@ -4,6 +4,20 @@ const alertEl      = document.getElementById('alert');
 const loginForm    = document.getElementById('login-form');
 const registerForm = document.getElementById('register-form');
 
+// ── Feature flags ─────────────────────────────────────────────────────────────
+(async () => {
+  try {
+    const res  = await fetch('/api/auth/config');
+    const cfg  = await res.json();
+    if (!cfg.registrationEnabled) {
+      const registerTab = document.querySelector('.tab-btn[data-tab="register"]');
+      if (registerTab) registerTab.remove();
+      const registerSection = document.getElementById('register-section');
+      if (registerSection) registerSection.remove();
+    }
+  } catch (_) { /* non-fatal */ }
+})();
+
 function showAlert(msg, type = 'error') {
   alertEl.textContent = msg;
   alertEl.className   = `alert ${type}`;

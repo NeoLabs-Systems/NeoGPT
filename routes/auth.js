@@ -14,11 +14,21 @@ const authLimiter = rateLimit({
   max: 10,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { trustProxy: false },
   message: { error: 'Too many attempts, please try again later.' },
+});
+
+// GET /api/auth/config  (public – exposes feature flags to the frontend)
+router.get('/config', (req, res) => {
+  res.json({
+    registrationEnabled: process.env.DISABLE_REGISTRATION !== 'true',
+  });
 });
 
 // POST /api/auth/register
 router.post('/register', authLimiter, async (req, res) => {
+  if (process.env.DISABLE_REGISTRATION === 'true')
+    return res.status(403).json({ error: 'Registration is disabled' });
   const { username, email, password } = req.body;
   if (!username || !email || !password) return res.status(400).json({ error: 'All fields required' });
   if (typeof username !== 'string' || username.length > 50)  return res.status(400).json({ error: 'Username too long (max 50 chars)' });
