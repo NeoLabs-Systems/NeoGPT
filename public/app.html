@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>GPTNeo</title>
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GPTNeo">
+  <meta name="theme-color" content="#0f0f17">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="icon" type="image/svg+xml" href="/icon.svg">
+  <link rel="apple-touch-icon" href="/icon.svg">
+  <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+
+<!-- ═══════════════════ SIDEBAR ═══════════════════ -->
+<div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+        </svg>
+      </div>
+      <span class="logo-text">GPTNeo</span>
+    </div>
+    <button class="btn-new-chat" id="btn-new-chat" title="New Chat">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      New Chat
+    </button>
+  </div>
+
+  <div class="sidebar-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="text" id="search-input" placeholder="Search chats…">
+  </div>
+
+  <nav class="conv-list" id="conv-list">
+    <!-- populated by JS -->
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="sidebar-footer-btn" id="btn-settings">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      Settings
+    </button>
+    <button class="sidebar-footer-btn" id="btn-install" style="display:none">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Install App
+    </button>
+    <button class="sidebar-footer-btn" id="btn-logout">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Logout
+    </button>
+  </div>
+</aside>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<main class="main" id="main">
+  <!-- Mobile top bar -->
+  <div class="mobile-topbar">
+    <button class="topbar-btn" id="btn-sidebar-toggle">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <span class="mobile-title" id="mobile-title">GPTNeo</span>
+    <button class="topbar-btn" id="btn-new-chat-mobile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+  </div>
+
+  <!-- Chat header -->
+  <div class="chat-header" id="chat-header">
+    <div class="chat-header-left">
+      <span class="chat-title-text" id="chat-title-text">New Chat</span>
+      <button class="icon-btn rename-btn" id="btn-rename" title="Rename">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </button>
+    </div>
+    <div class="chat-header-right">
+      <div class="model-badge" id="model-badge">gpt-5-mini</div>
+      <button class="icon-btn" id="btn-delete-chat" title="Delete conversation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Welcome / Empty state -->
+  <div class="welcome" id="welcome">
+    <div class="welcome-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+      </svg>
+    </div>
+    <h1 class="welcome-title">How can I help you today?</h1>
+    <p class="welcome-sub">Start a new conversation, or pick one from the sidebar.</p>
+    <div class="welcome-chips" id="welcome-chips">
+      <button class="chip" data-prompt="Explain quantum computing in simple terms">Explain quantum computing</button>
+      <button class="chip" data-prompt="Write a Python function to sort a list of dictionaries by a key">Sort dicts in Python</button>
+      <button class="chip" data-prompt="What are the best practices for REST API design?">REST API best practices</button>
+      <button class="chip" data-prompt="Help me write a professional email declining a job offer">Decline a job offer</button>
+    </div>
+  </div>
+
+  <!-- Messages -->
+  <div class="messages" id="messages"></div>
+
+  <!-- Typing indicator -->
+  <div class="typing-indicator" id="typing-indicator" style="display:none">
+    <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+  </div>
+
+  <!-- Input area -->
+  <div class="input-area">
+    <!-- Mode selector -->
+    <div class="mode-selector" id="mode-selector">
+      <button class="mode-btn active" data-mode="normal">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        Normal
+      </button>
+      <button class="mode-btn" data-mode="thinking">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Thinking
+      </button>
+      <button class="mode-btn" data-mode="deep_research">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        Deep Research
+      </button>
+    </div>
+    <!-- Hidden file input -->
+    <input type="file" id="file-input" multiple
+      accept="image/*,.pdf,.txt,.md,.js,.ts,.py,.json,.csv,.html,.css,.xml,.yaml,.yml,.log,.sh,.c,.cpp,.h,.java,.rs,.go,.rb,.php"
+      style="display:none">
+    <!-- Attachment preview strip -->
+    <div class="attachment-preview" id="attachment-preview"></div>
+    <div class="input-wrap">
+      <textarea
+        id="msg-input"
+        class="msg-input"
+        placeholder="Message GPTNeo…"
+        rows="1"
+        maxlength="32000"
+        autofocus
+      ></textarea>
+      <div class="input-actions">
+        <button class="input-btn attach-btn" id="btn-attach" title="Attach files or images">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/>
+          </svg>
+        </button>
+        <button class="input-btn stt-btn" id="btn-stt" title="Speech to text">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+            <path d="M19 10v2a7 7 0 01-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </button>
+        <button class="input-btn send-btn" id="btn-send" title="Send" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </button>
+        <button class="input-btn stop-btn" id="btn-stop" title="Stop generating" style="display:none">
+          <svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        </button>
+      </div>
+    </div>
+    <p class="input-hint">GPTNeo can make mistakes. Verify important information.</p>
+  </div>
+</main>
+
+<!-- ═══════════════════ SETTINGS MODAL ═══════════════════ -->
+<div class="modal-overlay" id="settings-modal" style="display:none">
+  <div class="modal settings-modal-inner" role="dialog" aria-modal="true" aria-label="Settings">
+    <div class="modal-header">
+      <h2 class="modal-title">Settings</h2>
+      <button class="icon-btn modal-close" id="close-settings">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" data-tab="model">Model</button>
+      <button class="modal-tab" data-tab="instructions">Instructions</button>
+      <button class="modal-tab" data-tab="memory">Memory</button>
+      <button class="modal-tab" data-tab="mcp">MCP</button>
+    </div>
+
+    <!-- Model tab -->
+    <div class="modal-content" id="tab-model">
+      <div class="settings-section">
+        <label class="settings-label">AI Provider</label>
+        <select class="settings-select" id="set-provider">
+          <option value="openai">OpenAI</option>
+          <!-- Future: <option value="anthropic">Anthropic</option> -->
+        </select>
+        <p class="settings-hint">More providers coming soon.</p>
+      </div>
+      <div class="settings-section">
+        <label class="settings-label">Model</label>
+        <select class="settings-select" id="set-model">
+          <!-- populated by JS -->
+        </select>
+      </div>
+      <div class="settings-section">
+        <label class="settings-label">Streaming</label>
+        <div class="toggle-row">
+          <span class="toggle-desc">Stream responses in real-time</span>
+          <label class="toggle">
+            <input type="checkbox" id="set-stream" checked>
+            <span class="toggle-knob"></span>
+          </label>
+        </div>
+      </div>
+      <div class="settings-section">
+        <label class="settings-label">OpenAI API Key</label>
+        <div class="api-key-row">
+          <input type="password" class="settings-input" id="set-openai-api-key" placeholder="sk-…  (leave blank to keep current)" autocomplete="off">
+          <span class="api-key-status" id="api-key-status"></span>
+        </div>
+        <p class="settings-hint">Stored securely per-user. Leave blank to keep current value.</p>
+      </div>
+      <div class="settings-section">
+        <label class="settings-label">Tavily API Key <span class="settings-badge" style="font-size:10px">Web Search</span></label>
+        <div class="api-key-row">
+          <input type="password" class="settings-input" id="set-tavily-api-key" placeholder="tvly-…  (leave blank to keep current)" autocomplete="off">
+          <span class="api-key-status" id="tavily-key-status"></span>
+        </div>
+        <p class="settings-hint">Get a free key at <a href="https://tavily.com" target="_blank" rel="noopener" style="color:var(--accent)">tavily.com</a>. Enables web search &amp; Deep Research mode.</p>
+      </div>
+    </div>
+
+    <!-- Instructions tab -->
+    <div class="modal-content hidden" id="tab-instructions">
+
+      <div class="settings-section">
+        <label class="settings-label">System Prompt</label>
+        <textarea class="settings-textarea" id="set-system-prompt" rows="4" placeholder="You are a helpful, harmless, and honest AI assistant."></textarea>
+        <p class="settings-hint">The base system message sent at the start of every conversation.</p>
+      </div>
+      <div class="settings-section">
+        <label class="settings-label">Custom Instructions</label>
+        <textarea class="settings-textarea" id="set-custom-instructions" rows="5" placeholder="e.g. I'm a software engineer. Always provide code examples. Reply in German."></textarea>
+        <p class="settings-hint">Additional context about you appended to the system prompt in every chat.</p>
+      </div>
+      <div class="settings-section">
+        <label class="settings-label">Memory</label>
+        <div class="toggle-row">
+          <span class="toggle-desc">Include memory in conversations</span>
+          <label class="toggle">
+            <input type="checkbox" id="set-memory-enabled" checked>
+            <span class="toggle-knob"></span>
+          </label>
+        </div>
+      </div>
+      <div class="settings-section">
+        <label class="settings-label">Auto-save Memories</label>
+        <div class="toggle-row">
+          <span class="toggle-desc">AI automatically extracts &amp; saves facts about you after each reply</span>
+          <label class="toggle">
+            <input type="checkbox" id="set-auto-memory" checked>
+            <span class="toggle-knob"></span>
+          </label>
+        </div>
+        <p class="settings-hint">Uses gpt-4o-mini in the background. Only new facts are added.</p>
+      </div>
+    </div>
+
+    <!-- MCP tab -->
+    <div class="modal-content hidden" id="tab-mcp">
+      <div id="mcp-server-list" class="mcp-server-list">
+        <!-- populated by JS -->
+      </div>
+      <div class="settings-section">
+        <label class="settings-label">Add MCP Server</label>
+        <div class="mcp-add-form">
+          <div class="mcp-form-row">
+            <input type="text"  class="settings-input" id="mcp-add-name" placeholder="Display name" maxlength="80">
+          </div>
+          <div class="mcp-form-row">
+            <input type="text"  class="settings-input" id="mcp-add-url"  placeholder="Server URL (https://…)" maxlength="512">
+          </div>
+          <div class="mcp-form-row">
+            <select class="settings-select" id="mcp-add-auth-type">
+              <option value="none">No authentication</option>
+              <option value="token">Bearer token</option>
+              <option value="oauth">OAuth 2.0</option>
+            </select>
+          </div>
+          <div id="mcp-token-field" style="display:none">
+            <input type="password" class="settings-input" id="mcp-add-auth-token" placeholder="Bearer token / API key" autocomplete="off">
+          </div>
+          <div id="mcp-oauth-fields" style="display:none" class="mcp-oauth-grid">
+            <input type="text" class="settings-input" id="mcp-oauth-auth-url"       placeholder="Authorization URL">
+            <input type="text" class="settings-input" id="mcp-oauth-token-url"      placeholder="Token URL">
+            <input type="text" class="settings-input" id="mcp-oauth-client-id"      placeholder="Client ID">
+            <input type="password" class="settings-input" id="mcp-oauth-client-secret" placeholder="Client Secret">
+            <input type="text" class="settings-input" id="mcp-oauth-scope"          placeholder="Scopes (space-separated)">
+          </div>
+          <button class="btn-save" id="btn-mcp-add">Add Server</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Memory tab -->
+    <div class="modal-content hidden" id="tab-memory">
+      <div class="memory-add-row">
+        <input type="text" id="memory-add-input" class="memory-add-input" placeholder="Add a memory fact…" maxlength="500">
+        <button class="btn-save" id="btn-memory-add">Add</button>
+      </div>
+      <div class="memory-list" id="memory-list">
+        <!-- populated by JS -->
+      </div>
+      <div style="padding:14px 0 0;display:flex;justify-content:flex-start">
+        <button class="btn-cancel danger" id="btn-memory-clear">Clear All Memory</button>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancel-settings">Cancel</button>
+      <button class="btn-save" id="save-settings">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ RENAME MODAL ═══════════════════ -->
+<div class="modal-overlay" id="rename-modal" style="display:none">
+  <div class="modal rename-modal-inner" role="dialog" aria-modal="true" aria-label="Rename">
+    <div class="modal-header">
+      <h2 class="modal-title">Rename Conversation</h2>
+      <button class="icon-btn modal-close" id="close-rename">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="settings-section">
+      <input type="text" id="rename-input" class="settings-input" placeholder="Conversation title" maxlength="80">
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" id="cancel-rename">Cancel</button>
+      <button class="btn-save" id="confirm-rename">Rename</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TOAST ═══════════════════ -->
+<div class="toast" id="toast"></div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>
