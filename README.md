@@ -13,6 +13,9 @@ A self-hosted AI assistant — like ChatGPT, but running on your own machine.
 Bring your own OpenAI key, keep all conversations private, and extend it however you like.  
 No telemetry. No account. No vendor lock-in.
 
+
+<img width="2936" height="1414" alt="image" src="https://github.com/user-attachments/assets/4bf1ed22-3a4c-4c2a-a416-493e884f00b8" />
+
 ---
 
 [📖 Docs](https://github.com/NeoLabs-Systems/NeoGPT/wiki) · [🐛 Issues](https://github.com/NeoLabs-Systems/NeoGPT/issues) · [📋 Changelog](CHANGELOG.md)
