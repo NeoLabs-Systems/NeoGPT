@@ -69,7 +69,7 @@ const sessionStore = new SQLiteStore({
 });
 
 app.use(session({
-  name:             'gptneo.sid',
+  name:             'NeoGPT.sid',
   secret:           process.env.SESSION_SECRET || 'insecure-default-please-change',
   resave:           false,
   saveUninitialized: false,
@@ -128,7 +128,7 @@ app.use((_req, res) => res.status(404).json({ error: 'Not found' }));
 // ─── Start ────────────────────────────────────────────────────────────────────
 
 app.listen(PORT, () => {
-  console.log(`\n  GPTNeo running at http://localhost:${PORT}\n`);
+  console.log(`\n  NeoGPT running at http://localhost:${PORT}\n`);
 });
 
 module.exports = app;

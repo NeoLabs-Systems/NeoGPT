@@ -1,5 +1,5 @@
-/* GPTNeo Service Worker */
-const CACHE = 'gptneo-v1';
+/* NeoGPT Service Worker */
+const CACHE = 'NeoGPT-v1';
 const STATIC = [
   '/css/app.css',
   '/css/login.css',

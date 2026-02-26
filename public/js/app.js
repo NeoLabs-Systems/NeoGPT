@@ -1,5 +1,5 @@
 /* =========================================================
-   GPTNeo – Main App
+   NeoGPT – Main App
    Pure vanilla JS · no frameworks
    ========================================================= */
 'use strict';
@@ -368,8 +368,8 @@ function updateHeaderVisibility(hasConv) {
 
 function setTitle(title) {
   if (chatTitleText) chatTitleText.textContent = title;
-  if (mobileTitle) mobileTitle.textContent = title || 'GPTNeo';
-  document.title = title ? `${title} – GPTNeo` : 'GPTNeo';
+  if (mobileTitle) mobileTitle.textContent = title || 'NeoGPT';
+  document.title = title ? `${title} – NeoGPT` : 'NeoGPT';
 }
 
 function renderMessages(messages) {
@@ -1435,7 +1435,7 @@ btnInstall.addEventListener('click', async () => {
   const { outcome } = await state.deferredInstall.userChoice;
   if (outcome === 'accepted') {
     btnInstall.style.display = 'none';
-    showToast('GPTNeo installed!');
+    showToast('NeoGPT installed!');
   }
   state.deferredInstall = null;
 });

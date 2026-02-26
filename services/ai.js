@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * GPTNeo AI Service
+ * NeoGPT AI Service
  * ─────────────────
  * Provider abstraction layer. Currently supports OpenAI (GPT-5 family).
  *

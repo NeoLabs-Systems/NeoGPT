@@ -106,7 +106,7 @@ async function mcpInitialize(serverUrl, auth = null) {
   return mcpRequest(serverUrl, 'initialize', {
     protocolVersion: '2024-11-05',
     capabilities:    { tools: {} },
-    clientInfo:      { name: 'GPTNeo', version: '1.0.0' },
+    clientInfo:      { name: 'NeoGPT', version: '1.0.0' },
   }, auth);
 }
 

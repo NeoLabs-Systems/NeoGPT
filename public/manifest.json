@@ -1,6 +1,6 @@
 {
-  "name": "GPTNeo",
-  "short_name": "GPTNeo",
+  "name": "NeoGPT",
+  "short_name": "NeoGPT",
   "description": "Self-hosted ChatGPT-like AI assistant with multi-chat, memory and custom instructions",
   "start_url": "/app",
   "scope": "/",
