@@ -15,7 +15,7 @@ services:
       TRUST_PROXY: ${TRUST_PROXY:-0}
     volumes:
       # Persists SQLite databases and session store across container restarts
-      - neogpt_data:/app/data
+      - neogpt__db_data:/app/data
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
       interval: 30s
