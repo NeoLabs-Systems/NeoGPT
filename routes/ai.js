@@ -14,10 +14,14 @@ const router = express.Router();
 const execLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 30,
-  keyGenerator: (req) => String(req.session?.userId || req.ip),
+  keyGenerator: (req) => String(req.session?.userId || req.ip || req.socket?.remoteAddress || 'unknown'),
   standardHeaders: true,
   legacyHeaders: false,
-  validate: { trustProxy: false },
+  validate: { 
+    trustProxy: true,
+    xForwardedForHeader: false,
+    ip: false
+  },
   message: { error: 'Too many execution requests. Please slow down.' },
 });
 
