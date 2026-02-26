@@ -29,5 +29,5 @@ services:
         max-file: "3"
 
 volumes:
-  neogpt_data:
+  neogpt__db_data:
     driver: local
