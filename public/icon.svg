@@ -1,13 +1,33 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#6366f1"/>
-      <stop offset="100%" style="stop-color:#8b5cf6"/>
+    <linearGradient id="primary" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#818CF8"/>
+      <stop offset="1" stop-color="#4F46E5"/>
     </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
   </defs>
-  <rect width="100" height="100" rx="22" fill="url(#bg)"/>
-  <path d="M72 30H28a6 6 0 00-6 6v28a6 6 0 006 6h8l-4 10 14-10h26a6 6 0 006-6V36a6 6 0 00-6-6z" fill="white" opacity="0.95"/>
-  <circle cx="37" cy="50" r="4" fill="#6366f1"/>
-  <circle cx="50" cy="50" r="4" fill="#6366f1"/>
-  <circle cx="63" cy="50" r="4" fill="#6366f1"/>
+
+  <!-- Background -->
+  <rect x="32" y="32" width="448" height="448" rx="112" fill="#1E1E2E"/>
+
+  <!-- Chat bubble body -->
+  <rect x="100" y="140" width="312" height="240" rx="40" fill="url(#primary)" filter="url(#glow)"/>
+
+  <!-- Chat bubble tail -->
+  <path d="M140 380 L100 420 L160 380" fill="url(#primary)"/>
+  <path d="M140 380 L100 420 L160 380" stroke="#1E1E2E" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- Three dots representing AI chat -->
+  <circle cx="190" cy="240" r="18" fill="#ffffff" opacity="0.9"/>
+  <circle cx="256" cy="240" r="18" fill="#ffffff" opacity="0.7"/>
+  <circle cx="322" cy="240" r="18" fill="#ffffff" opacity="0.5"/>
+
+  <!-- AI Spark (Neo element) -->
+  <circle cx="380" cy="140" r="22" fill="#F472B6">
+    <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+  </circle>
+  <circle cx="380" cy="140" r="10" fill="#ffffff" opacity="0.9"/>
 </svg>
