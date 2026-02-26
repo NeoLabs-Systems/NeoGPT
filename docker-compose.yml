@@ -7,7 +7,7 @@ services:
     ports:
       - "${PORT:-3000}:3000"
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       PORT: 3000
       SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET must be set in .env}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
