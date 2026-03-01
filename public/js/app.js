@@ -1445,14 +1445,6 @@ window.addEventListener('appinstalled', () => {
   state.deferredInstall = null;
 });
 
-// ─── Service worker registration ──────────────────────────────────────────────
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/sw.js').catch(err => {
-    console.warn('[SW] Registration failed:', err);
-  });
-}
-
 // ─── Keyboard shortcuts ───────────────────────────────────────────────────────
 
 document.addEventListener('keydown', (e) => {
