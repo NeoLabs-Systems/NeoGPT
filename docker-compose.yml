@@ -5,10 +5,10 @@ services:
     container_name: neogpt
     restart: unless-stopped
     ports:
-      - "${PORT:-3000}:3000"
+      - "${PORT:-3030}:3030"
     environment:
       NODE_ENV: development
-      PORT: 3000
+      PORT: 3030
       SESSION_SECRET: ${SESSION_SECRET:?SESSION_SECRET must be set in .env}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       TAVILY_API_KEY: ${TAVILY_API_KEY:-}
@@ -17,7 +17,7 @@ services:
       # Persists SQLite databases and session store across container restarts
       - neogpt__db_data:/app/data
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:3030/"]
       interval: 30s
       timeout: 5s
       retries: 3
